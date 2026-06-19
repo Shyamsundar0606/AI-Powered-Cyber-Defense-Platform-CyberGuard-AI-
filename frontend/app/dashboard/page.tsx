@@ -1,4 +1,26 @@
-import { Activity, BrainCircuit, FileCode2, LayoutDashboard, Radar, ShieldCheck } from "lucide-react";
+"use client";
+
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import {
+  Activity,
+  BrainCircuit,
+  FileCode2,
+  LayoutDashboard,
+  LogOut,
+  Radar,
+  ShieldCheck,
+} from "lucide-react";
+
+import {
+  AuthUser,
+  clearAuthSession,
+  fetchCurrentUser,
+  fetchProtectedDashboard,
+  getAuthToken,
+  getStoredUser,
+  ProtectedDashboardResponse,
+} from "@/lib/auth";
 
 const navItems = [
   { label: "Overview", icon: LayoutDashboard },
@@ -36,6 +58,70 @@ const cards = [
 ];
 
 export default function DashboardPage() {
+  const router = useRouter();
+  const [user, setUser] = useState<AuthUser | null>(null);
+  const [dashboard, setDashboard] = useState<ProtectedDashboardResponse | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const token = getAuthToken();
+    if (!token) {
+      router.replace("/login");
+      return;
+    }
+    const authToken = token;
+
+    const cachedUser = getStoredUser();
+    if (cachedUser) {
+      setUser(cachedUser);
+    }
+
+    async function loadDashboard() {
+      try {
+        const [me, protectedData] = await Promise.all([
+          fetchCurrentUser(authToken),
+          fetchProtectedDashboard(authToken),
+        ]);
+        setUser(me);
+        setDashboard(protectedData);
+      } catch (err) {
+        clearAuthSession();
+        setError(err instanceof Error ? err.message : "Session expired.");
+        router.replace("/login");
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    loadDashboard();
+  }, [router]);
+
+  function handleLogout() {
+    clearAuthSession();
+    router.replace("/login");
+  }
+
+  if (isLoading) {
+    return (
+      <main className="grid min-h-screen place-items-center bg-slate-100 text-slate-950">
+        <div className="rounded-lg border border-slate-200 bg-white px-6 py-5 shadow-sm">
+          Loading secure dashboard...
+        </div>
+      </main>
+    );
+  }
+
+  if (!user) {
+    return (
+      <main className="grid min-h-screen place-items-center bg-slate-100 text-slate-950">
+        <div className="rounded-lg border border-rose-200 bg-white px-6 py-5 text-rose-700 shadow-sm">
+          {error || "Redirecting to login..."}
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="min-h-screen bg-slate-100 text-slate-950">
       <div className="grid min-h-screen lg:grid-cols-[280px_1fr]">
@@ -64,15 +150,35 @@ export default function DashboardPage() {
         </aside>
 
         <section className="px-6 py-6 lg:px-8">
-          <header className="mb-8 flex flex-col gap-4 border-b border-slate-200 pb-6 sm:flex-row sm:items-center sm:justify-between">
+          <header className="mb-8 flex flex-col gap-4 border-b border-slate-200 pb-6 xl:flex-row xl:items-center xl:justify-between">
             <div>
-              <p className="text-sm font-medium text-cyan-700">Phase 1</p>
+              <p className="text-sm font-medium text-cyan-700">Phase 2</p>
               <h1 className="mt-1 text-3xl font-semibold text-slate-950">Security Dashboard</h1>
             </div>
-            <div className="rounded-md border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600">
-              Backend status: <span className="font-semibold text-emerald-700">/api/status ready</span>
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+              <div className="rounded-md border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600">
+                Signed in as <span className="font-semibold text-slate-950">{user.username}</span>{" "}
+                <span className="text-slate-400">({user.email})</span>
+                {user.role === "admin" ? (
+                  <span className="ml-2 rounded-full bg-cyan-50 px-2.5 py-1 text-xs font-semibold text-cyan-700">
+                    Admin
+                  </span>
+                ) : null}
+              </div>
+              <button
+                className="flex items-center justify-center gap-2 rounded-md border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+                type="button"
+                onClick={handleLogout}
+              >
+                <LogOut size={16} aria-hidden="true" />
+                Logout
+              </button>
             </div>
           </header>
+
+          <div className="mb-6 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+            {dashboard?.message ?? "Authenticated dashboard access granted."}
+          </div>
 
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             {cards.map((card) => (
@@ -114,16 +220,19 @@ export default function DashboardPage() {
             <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
               <h2 className="text-lg font-semibold">Platform Readiness</h2>
               <div className="mt-5 space-y-4">
-                {["FastAPI health APIs", "Next.js app router", "Docker Compose", "SQLite-ready structure"].map(
-                  (item) => (
-                    <div key={item} className="flex items-center justify-between gap-3 text-sm">
-                      <span className="text-slate-600">{item}</span>
-                      <span className="rounded-full bg-emerald-50 px-2.5 py-1 font-medium text-emerald-700">
-                        Done
-                      </span>
-                    </div>
-                  ),
-                )}
+                {[
+                  "JWT authentication",
+                  "Password hashing",
+                  "SQLite user database",
+                  "Protected dashboard route",
+                ].map((item) => (
+                  <div key={item} className="flex items-center justify-between gap-3 text-sm">
+                    <span className="text-slate-600">{item}</span>
+                    <span className="rounded-full bg-emerald-50 px-2.5 py-1 font-medium text-emerald-700">
+                      Done
+                    </span>
+                  </div>
+                ))}
               </div>
             </section>
           </div>
