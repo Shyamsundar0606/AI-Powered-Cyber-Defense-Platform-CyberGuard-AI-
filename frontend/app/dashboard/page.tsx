@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import {
   Activity,
@@ -21,13 +22,14 @@ import {
   getStoredUser,
   ProtectedDashboardResponse,
 } from "@/lib/auth";
+import { fetchSocHistory, InvestigationHistoryItem } from "@/lib/soc";
 
 const navItems = [
-  { label: "Overview", icon: LayoutDashboard },
-  { label: "SOC Analyst", icon: BrainCircuit },
-  { label: "Threat Intel", icon: Radar },
-  { label: "MITRE Mapping", icon: Activity },
-  { label: "Detection Rules", icon: FileCode2 },
+  { label: "Overview", href: "/dashboard", icon: LayoutDashboard },
+  { label: "SOC Analyst", href: "/dashboard/soc-analyst", icon: BrainCircuit },
+  { label: "Threat Intel", href: "#", icon: Radar },
+  { label: "MITRE Knowledge Base", href: "/dashboard/mitre", icon: Activity },
+  { label: "Detection Rules", href: "#", icon: FileCode2 },
 ];
 
 const cards = [
@@ -36,24 +38,28 @@ const cards = [
     value: "Alert triage",
     description: "Analyze suspicious events and generate investigation notes.",
     icon: BrainCircuit,
+    href: "/dashboard/soc-analyst",
   },
   {
     title: "Threat Intel",
     value: "Enrichment",
     description: "Score IPs, domains, hashes, and CVEs with offline logic.",
     icon: Radar,
+    href: "#",
   },
   {
-    title: "MITRE Mapping",
+    title: "MITRE ATT&CK Knowledge Base",
     value: "ATT&CK",
-    description: "Map alert keywords to adversary techniques and tactics.",
+    description: "Search local techniques and map logs to adversary behaviors.",
     icon: Activity,
+    href: "/dashboard/mitre",
   },
   {
     title: "Detection Rules",
     value: "Sigma/YARA",
     description: "Prepare high-signal detection rules from alert context.",
     icon: FileCode2,
+    href: "#",
   },
 ];
 
@@ -61,6 +67,7 @@ export default function DashboardPage() {
   const router = useRouter();
   const [user, setUser] = useState<AuthUser | null>(null);
   const [dashboard, setDashboard] = useState<ProtectedDashboardResponse | null>(null);
+  const [history, setHistory] = useState<InvestigationHistoryItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -79,12 +86,14 @@ export default function DashboardPage() {
 
     async function loadDashboard() {
       try {
-        const [me, protectedData] = await Promise.all([
+        const [me, protectedData, investigations] = await Promise.all([
           fetchCurrentUser(authToken),
           fetchProtectedDashboard(authToken),
+          fetchSocHistory(authToken),
         ]);
         setUser(me);
         setDashboard(protectedData);
+        setHistory(investigations);
       } catch (err) {
         clearAuthSession();
         setError(err instanceof Error ? err.message : "Session expired.");
@@ -137,14 +146,14 @@ export default function DashboardPage() {
           </div>
           <nav className="space-y-1">
             {navItems.map((item) => (
-              <a
+              <Link
                 key={item.label}
-                href="#"
+                href={item.href}
                 className="flex items-center gap-3 rounded-md px-3 py-3 text-sm text-slate-300 transition hover:bg-white/10 hover:text-white"
               >
                 <item.icon size={18} aria-hidden="true" />
                 {item.label}
-              </a>
+              </Link>
             ))}
           </nav>
         </aside>
@@ -152,7 +161,7 @@ export default function DashboardPage() {
         <section className="px-6 py-6 lg:px-8">
           <header className="mb-8 flex flex-col gap-4 border-b border-slate-200 pb-6 xl:flex-row xl:items-center xl:justify-between">
             <div>
-              <p className="text-sm font-medium text-cyan-700">Phase 2</p>
+              <p className="text-sm font-medium text-cyan-700">Phase 4</p>
               <h1 className="mt-1 text-3xl font-semibold text-slate-950">Security Dashboard</h1>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -182,7 +191,7 @@ export default function DashboardPage() {
 
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             {cards.map((card) => (
-              <article key={card.title} className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+              <Link key={card.title} href={card.href} className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm transition hover:border-cyan-200 hover:shadow-md">
                 <div className="mb-5 flex items-center justify-between">
                   <card.icon className="text-cyan-700" size={24} aria-hidden="true" />
                   <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">
@@ -192,28 +201,34 @@ export default function DashboardPage() {
                 <p className="text-sm font-medium text-slate-500">{card.title}</p>
                 <h2 className="mt-2 text-xl font-semibold text-slate-950">{card.value}</h2>
                 <p className="mt-3 text-sm leading-6 text-slate-600">{card.description}</p>
-              </article>
+              </Link>
             ))}
           </div>
 
           <div className="mt-8 grid gap-4 lg:grid-cols-[1.4fr_0.8fr]">
             <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-              <h2 className="text-lg font-semibold">Investigation Queue</h2>
+              <h2 className="text-lg font-semibold">Recent Investigations</h2>
               <div className="mt-5 overflow-hidden rounded-lg border border-slate-200">
                 <div className="grid grid-cols-3 bg-slate-50 px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500">
                   <span>Signal</span>
                   <span>Severity</span>
                   <span>Status</span>
                 </div>
-                {["Suspicious PowerShell", "Impossible travel", "Credential spray"].map((event, index) => (
-                  <div key={event} className="grid grid-cols-3 border-t border-slate-200 px-4 py-3 text-sm">
-                    <span className="font-medium">{event}</span>
-                    <span className={index === 0 ? "text-rose-700" : "text-amber-700"}>
-                      {index === 0 ? "High" : "Medium"}
-                    </span>
-                    <span className="text-slate-500">Queued</span>
+                {history.length ? (
+                  history.map((event) => (
+                    <div key={event.id} className="grid grid-cols-3 border-t border-slate-200 px-4 py-3 text-sm">
+                      <span className="font-medium">{event.title}</span>
+                      <span className={event.severity === "Critical" ? "text-rose-700" : event.severity === "High" ? "text-orange-700" : "text-amber-700"}>
+                        {event.severity}
+                      </span>
+                      <span className="text-slate-500">Risk {event.risk_score}/100</span>
+                    </div>
+                  ))
+                ) : (
+                  <div className="border-t border-slate-200 px-4 py-4 text-sm text-slate-500">
+                    No SOC investigations yet.
                   </div>
-                ))}
+                )}
               </div>
             </section>
 
@@ -224,7 +239,8 @@ export default function DashboardPage() {
                   "JWT authentication",
                   "Password hashing",
                   "SQLite user database",
-                  "Protected dashboard route",
+                  "SOC alert analyzer",
+                  "MITRE knowledge base",
                 ].map((item) => (
                   <div key={item} className="flex items-center justify-between gap-3 text-sm">
                     <span className="text-slate-600">{item}</span>

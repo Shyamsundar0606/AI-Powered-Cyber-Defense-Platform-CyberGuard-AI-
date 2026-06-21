@@ -1,13 +1,22 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import text
 
-from app.api import auth, protected
+from app.api import auth, mitre, protected, soc
 from app.core.config import get_settings
 from app.db.database import Base, engine
+from app.models import investigation as investigation_model
 from app.models import user as user_model
 
 settings = get_settings()
 Base.metadata.create_all(bind=engine)
+
+with engine.begin() as connection:
+    if settings.database_url.startswith("sqlite"):
+        columns = connection.execute(text("PRAGMA table_info(investigations)")).fetchall()
+        column_names = {column[1] for column in columns}
+        if "mitre_mappings_json" not in column_names:
+            connection.execute(text("ALTER TABLE investigations ADD COLUMN mitre_mappings_json TEXT"))
 
 app = FastAPI(
     title="CyberGuard AI API",
@@ -25,6 +34,8 @@ app.add_middleware(
 
 app.include_router(auth.router)
 app.include_router(protected.router)
+app.include_router(soc.router)
+app.include_router(mitre.router)
 
 
 @app.get("/health", tags=["system"])
@@ -36,8 +47,10 @@ def health_check() -> dict[str, str]:
 def api_status() -> dict[str, str]:
     return {
         "project": "CyberGuard AI",
-        "phase": "Phase 2 - JWT Authentication",
+        "phase": "Phase 4 - MITRE ATT&CK Knowledge Base",
         "backend": "online",
         "auth": "jwt-enabled",
         "database": "sqlite",
+        "soc_analyzer": "rule-based",
+        "mitre_knowledge_base": "local-json",
     }

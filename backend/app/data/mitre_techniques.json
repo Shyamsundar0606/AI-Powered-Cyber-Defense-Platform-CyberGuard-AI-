@@ -1,0 +1,102 @@
+[
+  {
+    "technique_id": "T1110",
+    "name": "Brute Force",
+    "tactic": "Credential Access",
+    "description": "Adversaries may repeatedly try passwords or credentials against accounts until a valid login is found.",
+    "common_log_sources": ["Authentication logs", "Identity provider logs", "VPN logs", "Windows Security events"],
+    "detection_ideas": ["Look for repeated failed logins from the same source.", "Track high failure counts against privileged accounts.", "Alert on impossible travel with authentication failures."],
+    "mitigation": ["Enforce MFA.", "Enable account lockout or rate limiting.", "Block malicious sources and reset impacted credentials."],
+    "example_keywords": ["failed login", "invalid password", "brute force", "credential stuffing", "multiple failed"]
+  },
+  {
+    "technique_id": "T1078",
+    "name": "Valid Accounts",
+    "tactic": "Defense Evasion, Persistence, Privilege Escalation, Initial Access",
+    "description": "Adversaries may use legitimate user or service accounts to access systems and evade basic detection.",
+    "common_log_sources": ["Authentication logs", "IAM audit logs", "Endpoint login events"],
+    "detection_ideas": ["Monitor privileged account logins from unusual hosts.", "Review first-time account usage on sensitive systems.", "Correlate successful logins after repeated failures."],
+    "mitigation": ["Apply least privilege.", "Require MFA for privileged users.", "Review stale accounts and rotate credentials."],
+    "example_keywords": ["admin", "administrator", "root", "domain admin", "privileged account", "service account"]
+  },
+  {
+    "technique_id": "T1059",
+    "name": "Command and Scripting Interpreter",
+    "tactic": "Execution",
+    "description": "Adversaries may abuse command shells and scripting engines such as PowerShell to execute malicious commands.",
+    "common_log_sources": ["Process creation logs", "PowerShell logs", "EDR telemetry"],
+    "detection_ideas": ["Alert on encoded PowerShell commands.", "Inspect suspicious parent-child process chains.", "Look for script interpreters downloading or executing remote content."],
+    "mitigation": ["Constrain PowerShell usage.", "Enable script block logging.", "Restrict unsigned scripts and suspicious interpreters."],
+    "example_keywords": ["powershell", "encodedcommand", "encoded command", "-enc", "frombase64string", "cmd.exe", "wscript"]
+  },
+  {
+    "technique_id": "T1055",
+    "name": "Process Injection",
+    "tactic": "Defense Evasion, Privilege Escalation",
+    "description": "Adversaries may inject code into legitimate processes to hide execution or gain privileges.",
+    "common_log_sources": ["EDR telemetry", "Process access logs", "Memory analysis"],
+    "detection_ideas": ["Look for CreateRemoteThread or suspicious handle access.", "Correlate process injection alerts with unusual child processes.", "Monitor unsigned code in trusted processes."],
+    "mitigation": ["Use endpoint protection with behavior blocking.", "Reduce unnecessary privileges.", "Harden process and memory protections."],
+    "example_keywords": ["process injection", "inject into", "create remote thread", "dll injection", "remote thread"]
+  },
+  {
+    "technique_id": "T1041",
+    "name": "Exfiltration Over C2 Channel",
+    "tactic": "Exfiltration",
+    "description": "Adversaries may steal data by sending it through command-and-control or other outbound channels.",
+    "common_log_sources": ["Proxy logs", "Firewall logs", "NetFlow", "DNS logs"],
+    "detection_ideas": ["Alert on large outbound transfers to uncommon destinations.", "Monitor suspicious beaconing followed by upload activity.", "Correlate sensitive file access with outbound network spikes."],
+    "mitigation": ["Restrict outbound traffic.", "Use DLP controls.", "Block suspicious destinations and preserve network evidence."],
+    "example_keywords": ["exfiltration", "large upload", "data transfer", "sensitive data transfer", "suspicious outbound", "c2"]
+  },
+  {
+    "technique_id": "T1566",
+    "name": "Phishing",
+    "tactic": "Initial Access",
+    "description": "Adversaries may send malicious emails or messages to trick users into opening links, attachments, or entering credentials.",
+    "common_log_sources": ["Email gateway logs", "URL filtering logs", "User reports"],
+    "detection_ideas": ["Detect suspicious attachment names and sender spoofing.", "Correlate reported messages with URL clicks.", "Search for credential-harvesting language."],
+    "mitigation": ["Use email security controls.", "Train users to report suspicious messages.", "Block malicious senders, URLs, and attachments."],
+    "example_keywords": ["phishing", "credential harvest", "suspicious attachment", "malicious link", "invoice attachment"]
+  },
+  {
+    "technique_id": "T1021",
+    "name": "Remote Services",
+    "tactic": "Lateral Movement",
+    "description": "Adversaries may use remote services such as RDP, SSH, SMB, or WinRM to move across systems.",
+    "common_log_sources": ["Remote access logs", "Windows Security events", "VPN logs", "Network logs"],
+    "detection_ideas": ["Monitor remote logons from unusual hosts.", "Track lateral movement after credential alerts.", "Alert on remote service access by privileged users."],
+    "mitigation": ["Restrict remote service access.", "Segment sensitive networks.", "Require MFA and just-in-time access."],
+    "example_keywords": ["rdp", "ssh", "smb", "winrm", "remote login", "remote service"]
+  },
+  {
+    "technique_id": "T1082",
+    "name": "System Information Discovery",
+    "tactic": "Discovery",
+    "description": "Adversaries may gather system information to learn hostnames, users, operating systems, and environment details.",
+    "common_log_sources": ["Process creation logs", "Command history", "EDR telemetry"],
+    "detection_ideas": ["Look for discovery commands run by unusual users.", "Correlate discovery commands with later lateral movement.", "Detect scripted execution of host inventory commands."],
+    "mitigation": ["Limit command-line access where possible.", "Monitor unusual discovery activity.", "Harden endpoint logging."],
+    "example_keywords": ["systeminfo", "whoami", "hostname", "ipconfig", "uname", "computer discovery"]
+  },
+  {
+    "technique_id": "T1105",
+    "name": "Ingress Tool Transfer",
+    "tactic": "Command and Control",
+    "description": "Adversaries may transfer tools or payloads into an environment from external systems.",
+    "common_log_sources": ["Proxy logs", "Process creation logs", "EDR telemetry", "Firewall logs"],
+    "detection_ideas": ["Detect command-line download utilities.", "Look for script download cradles.", "Correlate downloads into temporary directories with execution."],
+    "mitigation": ["Restrict outbound download utilities.", "Block known malicious hosts.", "Inspect downloads and enforce application control."],
+    "example_keywords": ["download cradle", "invoke-webrequest", "curl", "wget", "bitsadmin", "downloaded payload"]
+  },
+  {
+    "technique_id": "T1003",
+    "name": "OS Credential Dumping",
+    "tactic": "Credential Access",
+    "description": "Adversaries may dump credentials from operating system stores such as LSASS or security databases.",
+    "common_log_sources": ["EDR telemetry", "Process access logs", "Windows Security events"],
+    "detection_ideas": ["Alert on suspicious LSASS access.", "Detect credential dumping tools.", "Monitor registry hive exports and memory dumping behavior."],
+    "mitigation": ["Enable credential protection features.", "Restrict debug privileges.", "Use endpoint controls to block credential dumping tools."],
+    "example_keywords": ["credential dumping", "lsass", "mimikatz", "procdump", "sam database", "ntds.dit"]
+  }
+]
