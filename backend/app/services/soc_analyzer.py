@@ -1,5 +1,6 @@
 from app.schemas.soc import AlertAnalysisRequest, AlertAnalysisResponse, MitreTechnique
 from app.services.mitre_mapper import enrich_technique_mapping, map_log_to_techniques
+from app.services.threat_intel import enrich_ip
 
 
 def analyze_alert(payload: AlertAnalysisRequest) -> AlertAnalysisResponse:
@@ -159,6 +160,10 @@ def analyze_alert(payload: AlertAnalysisRequest) -> AlertAnalysisResponse:
         payload.event_type,
     )
     techniques = _merge_techniques(mapped_from_rules + mapped_from_keywords)
+    threat_intel_results = [
+        enrich_ip(payload.source_ip),
+        enrich_ip(payload.destination_ip),
+    ]
 
     summary = (
         f"{severity} severity alert for {payload.event_type} activity involving "
@@ -174,6 +179,7 @@ def analyze_alert(payload: AlertAnalysisRequest) -> AlertAnalysisResponse:
         summary=summary,
         suspicious_indicators=indicators,
         mitre_techniques=techniques,
+        threat_intel_results=threat_intel_results,
         recommended_actions=sorted(actions),
         incident_report=incident_report,
     )

@@ -1,0 +1,23 @@
+[
+  {
+    "cve_id": "CVE-2024-4577",
+    "severity": "Critical",
+    "cvss": 9.8,
+    "description": "PHP CGI argument injection vulnerability that may allow remote code execution in affected configurations.",
+    "mitigation": ["Upgrade PHP to a fixed version.", "Disable exposed CGI configurations where possible.", "Block exploit patterns at the WAF while patching."]
+  },
+  {
+    "cve_id": "CVE-2023-34362",
+    "severity": "Critical",
+    "cvss": 9.8,
+    "description": "MOVEit Transfer SQL injection vulnerability exploited for unauthorized access and data theft.",
+    "mitigation": ["Apply vendor patches.", "Review indicators of compromise.", "Rotate secrets and inspect transfer logs."]
+  },
+  {
+    "cve_id": "CVE-2021-44228",
+    "severity": "Critical",
+    "cvss": 10.0,
+    "description": "Apache Log4j remote code execution vulnerability known as Log4Shell.",
+    "mitigation": ["Upgrade Log4j.", "Remove vulnerable JndiLookup classes in emergency cases.", "Monitor outbound callbacks from Java workloads."]
+  }
+]

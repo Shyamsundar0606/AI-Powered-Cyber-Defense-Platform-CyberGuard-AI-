@@ -1,4 +1,5 @@
 import { apiRequest } from "./api";
+import { ThreatIntelResult } from "./threat-intel";
 
 export type Severity = "Low" | "Medium" | "High" | "Critical";
 
@@ -29,6 +30,7 @@ export type SocAnalysisResult = {
   summary: string;
   suspicious_indicators: string[];
   mitre_techniques: MitreTechnique[];
+  threat_intel_results: ThreatIntelResult[];
   recommended_actions: string[];
   incident_report: string;
 };
@@ -44,6 +46,7 @@ export type InvestigationHistoryItem = {
   risk_score: number;
   summary: string;
   mitre_mappings_json?: string | null;
+  threat_intel_json?: string | null;
   created_at: string;
 };
 

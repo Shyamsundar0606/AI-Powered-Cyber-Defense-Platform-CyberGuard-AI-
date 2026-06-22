@@ -1,0 +1,23 @@
+[
+  {
+    "indicator": "evil-download-update.com",
+    "reputation": "High Risk",
+    "risk_score": 90,
+    "tags": ["malware_delivery", "download_cradle", "suspicious_update"],
+    "recommendations": ["Block the domain at DNS/proxy layers.", "Search endpoint telemetry for downloads from this domain."]
+  },
+  {
+    "indicator": "login-security-verify.example",
+    "reputation": "High Risk",
+    "risk_score": 80,
+    "tags": ["phishing", "credential_harvesting"],
+    "recommendations": ["Block the domain.", "Search email and proxy logs for user interaction."]
+  },
+  {
+    "indicator": "updates-microsoft-secure.example",
+    "reputation": "Medium Risk",
+    "risk_score": 70,
+    "tags": ["brand_impersonation", "suspicious_update"],
+    "recommendations": ["Validate ownership and certificate details.", "Block if not business-approved."]
+  }
+]

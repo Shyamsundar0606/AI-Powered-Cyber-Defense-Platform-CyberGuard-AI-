@@ -1,0 +1,23 @@
+[
+  {
+    "indicator": "185.220.101.1",
+    "reputation": "High Risk",
+    "risk_score": 85,
+    "tags": ["tor_exit_node", "anonymizer", "suspicious_source"],
+    "recommendations": ["Block or challenge traffic from this IP.", "Review authentication attempts and network sessions involving this source."]
+  },
+  {
+    "indicator": "45.33.21.10",
+    "reputation": "Medium Risk",
+    "risk_score": 65,
+    "tags": ["scanner", "suspicious_login_source"],
+    "recommendations": ["Rate-limit authentication attempts.", "Review related failed login events."]
+  },
+  {
+    "indicator": "203.0.113.50",
+    "reputation": "Medium Risk",
+    "risk_score": 60,
+    "tags": ["test_net", "suspicious_auth_activity"],
+    "recommendations": ["Validate whether this source is expected.", "Correlate with user login history."]
+  }
+]

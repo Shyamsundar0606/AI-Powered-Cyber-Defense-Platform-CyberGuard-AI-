@@ -33,6 +33,10 @@ def analyze_soc_alert(
             [technique.model_dump() for technique in result.mitre_techniques],
             default=str,
         ),
+        threat_intel_json=json.dumps(
+            [intel.model_dump() for intel in result.threat_intel_results],
+            default=str,
+        ),
     )
     db.add(investigation)
     db.commit()

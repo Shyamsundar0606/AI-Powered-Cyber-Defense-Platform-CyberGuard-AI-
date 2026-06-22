@@ -11,11 +11,13 @@ import {
   History,
   Loader2,
   LogOut,
+  Radar,
   ShieldAlert,
   ShieldCheck,
 } from "lucide-react";
 
 import { AuthUser, clearAuthSession, fetchCurrentUser, getAuthToken, getStoredUser } from "@/lib/auth";
+import { ThreatIntelResult } from "@/lib/threat-intel";
 import {
   analyzeSocAlert,
   fetchSocHistory,
@@ -152,6 +154,10 @@ export default function SocAnalystPage() {
               <BrainCircuit size={18} aria-hidden="true" />
               SOC Analyst
             </Link>
+            <Link href="/dashboard/threat-intel" className="flex items-center gap-3 rounded-md px-3 py-3 text-sm text-slate-300 transition hover:bg-white/10 hover:text-white">
+              <Radar size={18} aria-hidden="true" />
+              Threat Intelligence
+            </Link>
             <Link href="/dashboard/mitre" className="flex items-center gap-3 rounded-md px-3 py-3 text-sm text-slate-300 transition hover:bg-white/10 hover:text-white">
               <Activity size={18} aria-hidden="true" />
               MITRE Knowledge Base
@@ -162,7 +168,7 @@ export default function SocAnalystPage() {
         <section className="px-6 py-6 lg:px-8">
           <header className="mb-6 flex flex-col gap-4 border-b border-slate-200 pb-6 xl:flex-row xl:items-center xl:justify-between">
             <div>
-              <p className="text-sm font-medium text-cyan-700">Phase 4</p>
+              <p className="text-sm font-medium text-cyan-700">Phase 5</p>
               <h1 className="mt-1 text-3xl font-semibold text-slate-950">AI SOC Analyst</h1>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -247,6 +253,16 @@ export default function SocAnalystPage() {
                       )}
                     </div>
                   </div>
+                  <div>
+                    <h3 className="mb-2 text-sm font-semibold text-slate-700">Threat Intelligence Enrichment</h3>
+                    <div className="space-y-2">
+                      {result.threat_intel_results.length ? (
+                        result.threat_intel_results.map((intel) => <ThreatIntelCard key={`${intel.type}-${intel.indicator}`} intel={intel} />)
+                      ) : (
+                        <p className="text-sm text-slate-500">No threat intelligence enrichment available.</p>
+                      )}
+                    </div>
+                  </div>
                   <ResultBlock title="Recommended Actions" items={result.recommended_actions} />
                   <div>
                     <h3 className="mb-2 text-sm font-semibold text-slate-700">Incident Report</h3>
@@ -324,6 +340,26 @@ function MitreCard({ technique }: { technique: MitreTechnique }) {
       ) : null}
       <MiniList title="Detection Ideas" items={technique.detection_ideas} />
       <MiniList title="Mitigation" items={technique.mitigation} />
+    </div>
+  );
+}
+
+function ThreatIntelCard({ intel }: { intel: ThreatIntelResult }) {
+  return (
+    <div className="rounded-md border border-slate-200 bg-slate-50 p-4 text-sm">
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="rounded-full bg-cyan-50 px-2.5 py-1 font-semibold text-cyan-700">{intel.type.toUpperCase()}</span>
+        <p className="font-semibold text-slate-950">{intel.indicator}</p>
+        <span className="rounded-full bg-white px-2.5 py-1 text-xs font-medium text-slate-600">Risk {intel.risk_score}/100</span>
+      </div>
+      <p className="mt-2 font-medium text-slate-700">{intel.reputation}</p>
+      {intel.description ? <p className="mt-2 leading-6 text-slate-600">{intel.description}</p> : null}
+      <div className="mt-3 flex flex-wrap gap-2">
+        {intel.tags.map((tag) => (
+          <span key={tag} className="rounded-full bg-white px-2.5 py-1 text-xs font-medium text-slate-600">{tag}</span>
+        ))}
+      </div>
+      <MiniList title="Recommendations" items={intel.recommendations} />
     </div>
   );
 }

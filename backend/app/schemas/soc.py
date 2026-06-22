@@ -3,6 +3,8 @@ from typing import Literal
 
 from pydantic import BaseModel, Field
 
+from app.schemas.threat_intel import ThreatIntelResult
+
 Severity = Literal["Low", "Medium", "High", "Critical"]
 
 
@@ -33,6 +35,7 @@ class AlertAnalysisResponse(BaseModel):
     summary: str
     suspicious_indicators: list[str]
     mitre_techniques: list[MitreTechnique]
+    threat_intel_results: list[ThreatIntelResult] = []
     recommended_actions: list[str]
     incident_report: str
 
@@ -53,6 +56,7 @@ class InvestigationRead(BaseModel):
     risk_score: int
     summary: str
     mitre_mappings_json: str | None = None
+    threat_intel_json: str | None = None
     created_at: datetime
 
     model_config = {"from_attributes": True}

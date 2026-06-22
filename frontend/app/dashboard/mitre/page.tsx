@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useMemo, useState } from "react";
-import { Activity, ArrowLeft, BrainCircuit, Loader2, LogOut, Search, ShieldCheck, Target } from "lucide-react";
+import { Activity, ArrowLeft, BrainCircuit, Loader2, LogOut, Radar, Search, ShieldCheck, Target } from "lucide-react";
 
 import { AuthUser, clearAuthSession, fetchCurrentUser, getAuthToken, getStoredUser } from "@/lib/auth";
 import { fetchMitreTechniques, mapLogToMitre } from "@/lib/mitre";
@@ -126,6 +126,10 @@ export default function MitrePage() {
             <Link href="/dashboard/soc-analyst" className="flex items-center gap-3 rounded-md px-3 py-3 text-sm text-slate-300 transition hover:bg-white/10 hover:text-white">
               <BrainCircuit size={18} aria-hidden="true" />
               SOC Analyst
+            </Link>
+            <Link href="/dashboard/threat-intel" className="flex items-center gap-3 rounded-md px-3 py-3 text-sm text-slate-300 transition hover:bg-white/10 hover:text-white">
+              <Radar size={18} aria-hidden="true" />
+              Threat Intelligence
             </Link>
             <Link href="/dashboard/mitre" className="flex items-center gap-3 rounded-md bg-white/10 px-3 py-3 text-sm text-white">
               <Activity size={18} aria-hidden="true" />

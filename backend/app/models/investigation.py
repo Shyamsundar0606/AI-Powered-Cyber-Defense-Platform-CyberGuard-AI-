@@ -19,6 +19,7 @@ class Investigation(Base):
     risk_score: Mapped[int] = mapped_column(Integer, nullable=False)
     summary: Mapped[str] = mapped_column(Text, nullable=False)
     mitre_mappings_json: Mapped[str | None] = mapped_column(Text, nullable=True)
+    threat_intel_json: Mapped[str | None] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=lambda: datetime.now(timezone.utc),
