@@ -7,6 +7,7 @@ import {
   Activity,
   ArrowLeft,
   BrainCircuit,
+  FileCode2,
   FileText,
   History,
   Loader2,
@@ -122,6 +123,20 @@ export default function SocAnalystPage() {
     router.replace("/login");
   }
 
+  function handleGenerateDetectionRule() {
+    if (!result) {
+      return;
+    }
+    const params = new URLSearchParams({
+      title,
+      description: result.summary,
+      behavior: result.suspicious_indicators.join("; "),
+      mitre: result.mitre_techniques.map((technique) => technique.technique_id).join(","),
+      log_source: eventType === "authentication" ? "windows_security" : eventType === "malware" ? "powershell" : "sysmon",
+    });
+    router.push(`/dashboard/detection-engineering?${params.toString()}`);
+  }
+
   if (isLoading) {
     return (
       <main className="grid min-h-screen place-items-center bg-slate-100 text-slate-950">
@@ -161,6 +176,10 @@ export default function SocAnalystPage() {
             <Link href="/dashboard/mitre" className="flex items-center gap-3 rounded-md px-3 py-3 text-sm text-slate-300 transition hover:bg-white/10 hover:text-white">
               <Activity size={18} aria-hidden="true" />
               MITRE Knowledge Base
+            </Link>
+            <Link href="/dashboard/detection-engineering" className="flex items-center gap-3 rounded-md px-3 py-3 text-sm text-slate-300 transition hover:bg-white/10 hover:text-white">
+              <FileCode2 size={18} aria-hidden="true" />
+              Detection Engineering
             </Link>
           </nav>
         </aside>
@@ -240,6 +259,10 @@ export default function SocAnalystPage() {
                   <div className="flex flex-wrap items-center gap-3">
                     <span className={`rounded-full px-3 py-1 text-sm font-semibold ${severityStyles[result.severity]}`}>{result.severity}</span>
                     <span className="rounded-full bg-slate-100 px-3 py-1 text-sm font-semibold text-slate-700">Risk {result.risk_score}/100</span>
+                    <button className="inline-flex items-center gap-2 rounded-md border border-cyan-200 bg-cyan-50 px-3 py-2 text-sm font-semibold text-cyan-700 transition hover:bg-cyan-100" type="button" onClick={handleGenerateDetectionRule}>
+                      <FileCode2 size={16} aria-hidden="true" />
+                      Generate Detection Rule
+                    </button>
                   </div>
                   <ResultBlock title="Summary" items={[result.summary]} />
                   <ResultBlock title="Suspicious Indicators" items={result.suspicious_indicators} />

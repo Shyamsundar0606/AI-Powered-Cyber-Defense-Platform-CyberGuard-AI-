@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
-import { Activity, ArrowLeft, BrainCircuit, Loader2, LogOut, Radar, Search, ShieldCheck } from "lucide-react";
+import { Activity, ArrowLeft, BrainCircuit, FileCode2, Loader2, LogOut, Radar, Search, ShieldCheck } from "lucide-react";
 
 import { AuthUser, clearAuthSession, fetchCurrentUser, getAuthToken, getStoredUser } from "@/lib/auth";
 import { enrichThreatIndicator, IndicatorType, ThreatIntelResult } from "@/lib/threat-intel";
@@ -31,6 +31,7 @@ export default function ThreatIntelPage() {
       router.replace("/login");
       return;
     }
+    const authToken = token;
     const cachedUser = getStoredUser();
     if (cachedUser) {
       setUser(cachedUser);
@@ -38,7 +39,7 @@ export default function ThreatIntelPage() {
 
     async function loadPage() {
       try {
-        setUser(await fetchCurrentUser(token));
+        setUser(await fetchCurrentUser(authToken));
       } catch (err) {
         clearAuthSession();
         setError(err instanceof Error ? err.message : "Session expired.");
@@ -120,6 +121,10 @@ export default function ThreatIntelPage() {
             <Link href="/dashboard/mitre" className="flex items-center gap-3 rounded-md px-3 py-3 text-sm text-slate-300 transition hover:bg-white/10 hover:text-white">
               <Activity size={18} aria-hidden="true" />
               MITRE Knowledge Base
+            </Link>
+            <Link href="/dashboard/detection-engineering" className="flex items-center gap-3 rounded-md px-3 py-3 text-sm text-slate-300 transition hover:bg-white/10 hover:text-white">
+              <FileCode2 size={18} aria-hidden="true" />
+              Detection Engineering
             </Link>
           </nav>
         </aside>

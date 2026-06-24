@@ -29,7 +29,7 @@ const navItems = [
   { label: "SOC Analyst", href: "/dashboard/soc-analyst", icon: BrainCircuit },
   { label: "Threat Intelligence", href: "/dashboard/threat-intel", icon: Radar },
   { label: "MITRE Knowledge Base", href: "/dashboard/mitre", icon: Activity },
-  { label: "Detection Rules", href: "#", icon: FileCode2 },
+  { label: "Detection Engineering", href: "/dashboard/detection-engineering", icon: FileCode2 },
 ];
 
 const cards = [
@@ -55,11 +55,11 @@ const cards = [
     href: "/dashboard/mitre",
   },
   {
-    title: "Detection Rules",
+    title: "Detection Engineering",
     value: "Sigma/YARA",
     description: "Prepare high-signal detection rules from alert context.",
     icon: FileCode2,
-    href: "#",
+    href: "/dashboard/detection-engineering",
   },
 ];
 
@@ -161,7 +161,7 @@ export default function DashboardPage() {
         <section className="px-6 py-6 lg:px-8">
           <header className="mb-8 flex flex-col gap-4 border-b border-slate-200 pb-6 xl:flex-row xl:items-center xl:justify-between">
             <div>
-              <p className="text-sm font-medium text-cyan-700">Phase 5</p>
+              <p className="text-sm font-medium text-cyan-700">Phase 6</p>
               <h1 className="mt-1 text-3xl font-semibold text-slate-950">Security Dashboard</h1>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -242,6 +242,7 @@ export default function DashboardPage() {
                   "SOC alert analyzer",
                   "MITRE knowledge base",
                   "Threat intelligence enrichment",
+                  "Detection engineering",
                 ].map((item) => (
                   <div key={item} className="flex items-center justify-between gap-3 text-sm">
                     <span className="text-slate-600">{item}</span>
