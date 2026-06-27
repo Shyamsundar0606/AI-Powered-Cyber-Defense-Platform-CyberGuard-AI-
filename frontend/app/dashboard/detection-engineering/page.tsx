@@ -12,6 +12,7 @@ import {
   Loader2,
   LogOut,
   Radar,
+  Search,
   ShieldCheck,
 } from "lucide-react";
 
@@ -177,13 +178,17 @@ export default function DetectionEngineeringPage() {
               <FileCode2 size={18} aria-hidden="true" />
               Detection Engineering
             </Link>
+            <Link href="/dashboard/threat-hunting" className="flex items-center gap-3 rounded-md px-3 py-3 text-sm text-slate-300 transition hover:bg-white/10 hover:text-white">
+              <Search size={18} aria-hidden="true" />
+              Threat Hunting
+            </Link>
           </nav>
         </aside>
 
         <section className="px-6 py-6 lg:px-8">
           <header className="mb-6 flex flex-col gap-4 border-b border-slate-200 pb-6 xl:flex-row xl:items-center xl:justify-between">
             <div>
-              <p className="text-sm font-medium text-cyan-700">Phase 6</p>
+              <p className="text-sm font-medium text-cyan-700">Phase 7</p>
               <h1 className="mt-1 text-3xl font-semibold text-slate-950">Detection Engineering</h1>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -228,6 +233,9 @@ export default function DetectionEngineeringPage() {
                 <input className="mt-2 w-full rounded-md border border-slate-200 px-3 py-3 text-sm outline-none focus:border-cyan-500" value={mitreIds} onChange={(event) => setMitreIds(event.target.value)} placeholder="T1110,T1078" />
               </label>
               {error ? <p className="mt-4 rounded-md bg-rose-50 px-3 py-2 text-sm text-rose-700">{error}</p> : null}
+              <p className="mt-4 rounded-md border border-cyan-100 bg-cyan-50 px-3 py-2 text-sm text-cyan-800">
+                Use generated Sigma logic to hunt similar events in the Threat Hunting console.
+              </p>
               <button className="mt-5 flex w-full items-center justify-center gap-2 rounded-md bg-cyan-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-cyan-700 disabled:opacity-60" type="submit" disabled={isGenerating}>
                 {isGenerating ? <Loader2 className="animate-spin" size={18} aria-hidden="true" /> : <FileCode2 size={18} aria-hidden="true" />}
                 {isGenerating ? "Generating..." : "Generate detection package"}

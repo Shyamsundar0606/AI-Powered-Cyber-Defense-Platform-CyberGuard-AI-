@@ -13,6 +13,7 @@ import {
   Loader2,
   LogOut,
   Radar,
+  Search,
   ShieldAlert,
   ShieldCheck,
 } from "lucide-react";
@@ -137,6 +138,16 @@ export default function SocAnalystPage() {
     router.push(`/dashboard/detection-engineering?${params.toString()}`);
   }
 
+  function handleOpenThreatHunting() {
+    const params = new URLSearchParams({
+      hunt_name: `${title} Hunt`,
+      hunt_type: eventType === "authentication" ? "authentication" : eventType === "network" ? "network" : eventType === "malware" ? "powershell" : "generic",
+      query: result?.suspicious_indicators.join(" ") || `${eventType} ${username}`,
+      log_content: logContent,
+    });
+    router.push(`/dashboard/threat-hunting?${params.toString()}`);
+  }
+
   if (isLoading) {
     return (
       <main className="grid min-h-screen place-items-center bg-slate-100 text-slate-950">
@@ -181,13 +192,17 @@ export default function SocAnalystPage() {
               <FileCode2 size={18} aria-hidden="true" />
               Detection Engineering
             </Link>
+            <Link href="/dashboard/threat-hunting" className="flex items-center gap-3 rounded-md px-3 py-3 text-sm text-slate-300 transition hover:bg-white/10 hover:text-white">
+              <Search size={18} aria-hidden="true" />
+              Threat Hunting
+            </Link>
           </nav>
         </aside>
 
         <section className="px-6 py-6 lg:px-8">
           <header className="mb-6 flex flex-col gap-4 border-b border-slate-200 pb-6 xl:flex-row xl:items-center xl:justify-between">
             <div>
-              <p className="text-sm font-medium text-cyan-700">Phase 5</p>
+              <p className="text-sm font-medium text-cyan-700">Phase 7</p>
               <h1 className="mt-1 text-3xl font-semibold text-slate-950">AI SOC Analyst</h1>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -262,6 +277,10 @@ export default function SocAnalystPage() {
                     <button className="inline-flex items-center gap-2 rounded-md border border-cyan-200 bg-cyan-50 px-3 py-2 text-sm font-semibold text-cyan-700 transition hover:bg-cyan-100" type="button" onClick={handleGenerateDetectionRule}>
                       <FileCode2 size={16} aria-hidden="true" />
                       Generate Detection Rule
+                    </button>
+                    <button className="inline-flex items-center gap-2 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50" type="button" onClick={handleOpenThreatHunting}>
+                      <Search size={16} aria-hidden="true" />
+                      Open in Threat Hunting
                     </button>
                   </div>
                   <ResultBlock title="Summary" items={[result.summary]} />

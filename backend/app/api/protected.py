@@ -12,7 +12,13 @@ def protected_dashboard(current_user: User = Depends(get_current_user)) -> Prote
     return ProtectedDashboard(
         message="Authenticated dashboard access granted.",
         user=UserRead.model_validate(current_user),
-        modules=["SOC Analyst", "Threat Intelligence", "MITRE Knowledge Base", "Detection Engineering"],
+        modules=[
+            "SOC Analyst",
+            "Threat Intelligence",
+            "MITRE Knowledge Base",
+            "Detection Engineering",
+            "Threat Hunting",
+        ],
     )
 
 

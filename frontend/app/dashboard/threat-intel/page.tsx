@@ -126,6 +126,10 @@ export default function ThreatIntelPage() {
               <FileCode2 size={18} aria-hidden="true" />
               Detection Engineering
             </Link>
+            <Link href="/dashboard/threat-hunting" className="flex items-center gap-3 rounded-md px-3 py-3 text-sm text-slate-300 transition hover:bg-white/10 hover:text-white">
+              <Search size={18} aria-hidden="true" />
+              Threat Hunting
+            </Link>
           </nav>
         </aside>
 
