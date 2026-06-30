@@ -1,110 +1,255 @@
 # CyberGuard AI
 
-CyberGuard AI is a full-stack cybersecurity portfolio project for SOC automation, threat intelligence, MITRE ATT&CK mapping, detection engineering, and security analytics. This repository is being built in phases so each module stays clean, testable, and easy to explain in interviews.
+CyberGuard AI is a full-stack Security Operations Center platform for alert investigation, threat intelligence, MITRE ATT&CK mapping, detection engineering, threat hunting, and executive security reporting.
 
-## Phase 1 Scope
+The platform uses deterministic, explainable analysis and local intelligence datasets. It runs without paid APIs or internet-dependent security services, making it suitable for repeatable demonstrations, local labs, and cybersecurity engineering portfolios.
 
-- Base monorepo structure for backend, frontend, and Docker.
-- FastAPI backend with health/status endpoints.
-- Next.js frontend with a landing page and dashboard layout.
-- Sidebar navigation and cards for SOC Analyst, Threat Intel, MITRE Mapping, and Detection Rules.
-- Docker Compose setup for local development.
+## Core Capabilities
 
-## Tech Stack
+- JWT authentication with user and administrator roles
+- Secure password hashing with bcrypt
+- SQLite persistence through SQLAlchemy
+- AI SOC Analyst with severity scoring and incident reports
+- Local MITRE ATT&CK knowledge base and log-to-technique mapping
+- Offline enrichment for IP addresses, domains, file hashes, and CVEs
+- Sigma and YARA detection rule generation
+- Threat hunting with pattern matching and attack timelines
+- Security Operations Center dashboard with live SQLite analytics
+- Executive security reports with copy, print, and Markdown export
 
-- Backend: Python, FastAPI
-- Frontend: Next.js, React, Tailwind CSS
-- Database: SQLite planned for Phase 2
-- Auth: JWT planned for Phase 2
-- AI: Local Ollama-ready architecture planned for later phases, with rule-based fallback logic first
-- Deployment: Docker Compose
+## Platform Modules
 
-## Project Structure
+### AI SOC Analyst
+
+Analyzes authentication, network, malware, and other security events. Results include severity, risk score, suspicious indicators, MITRE ATT&CK mappings, threat intelligence enrichment, recommended actions, and an incident report.
+
+### Threat Intelligence
+
+Enriches indicators using local datasets and deterministic rules:
+
+- Public, private, loopback, and reserved IP classification
+- Known suspicious IP reputation
+- Suspicious and known malicious domain detection
+- MD5, SHA-1, and SHA-256 identification
+- Local CVE severity, CVSS, description, and mitigation lookup
+
+### MITRE ATT&CK Knowledge Base
+
+Provides local technique search, detailed defensive guidance, detection ideas, mitigations, example keywords, and automatic mappings from logs.
+
+### Detection Engineering
+
+Generates recruiter-friendly Sigma and YARA rules from suspicious behavior. Each package includes an explanation, false-positive notes, recommended log sources, severity, and enriched MITRE mappings.
+
+### Threat Hunting
+
+Searches pasted logs for authentication, PowerShell, network, and credential-access behavior. It extracts timestamps, identifies matching lines, calculates risk, maps techniques, and reconstructs an attack timeline.
+
+### Security Operations Dashboard
+
+Aggregates existing SQLite records into:
+
+- Alert and severity KPIs
+- Security posture score
+- MITRE technique distribution
+- IOC category and tag analytics
+- Alert, detection, and hunt trends
+- Recent activity and latest security records
+- Executive-ready Markdown reports
+
+## Technology Stack
+
+| Layer | Technology |
+| --- | --- |
+| Backend | Python 3.12, FastAPI, Pydantic |
+| Database | SQLite, SQLAlchemy |
+| Authentication | JWT, python-jose, passlib, bcrypt |
+| Frontend | Next.js 16, React 19, TypeScript |
+| Styling | Tailwind CSS, Lucide icons |
+| Analytics | Recharts |
+| Local data | JSON MITRE and threat intelligence datasets |
+| Containers | Docker Compose |
+
+## Architecture
 
 ```text
-cyberguard-ai/
-├── backend/
-│   ├── app/
-│   │   ├── main.py
-│   │   ├── core/
-│   │   ├── api/
-│   │   ├── models/
-│   │   ├── schemas/
-│   │   ├── services/
-│   │   ├── db/
-│   │   └── utils/
-│   ├── requirements.txt
-│   └── Dockerfile
-├── frontend/
-│   ├── app/
-│   ├── components/
-│   ├── lib/
-│   ├── package.json
-│   └── Dockerfile
-├── docker-compose.yml
-├── README.md
-└── .gitignore
+Browser
+  |
+  v
+Next.js frontend (localhost:3000)
+  |
+  | Bearer JWT / JSON
+  v
+FastAPI backend (127.0.0.1:8000)
+  |
+  +-- Authentication and role checks
+  +-- Deterministic security analysis services
+  +-- Local MITRE and threat intelligence JSON
+  |
+  v
+SQLite database
+  +-- users
+  +-- investigations
+  +-- detection_rules
+  +-- hunting_results
 ```
 
-## API Endpoints
+Backend modules follow a service-oriented structure:
 
-| Method | Endpoint | Description |
-| --- | --- | --- |
-| GET | `/health` | Backend health check |
-| GET | `/api/status` | Phase and platform status |
+```text
+backend/app/
+|-- api/          # FastAPI routes
+|-- core/         # Configuration and JWT security
+|-- data/         # Local MITRE and threat intelligence datasets
+|-- db/           # SQLAlchemy engine and sessions
+|-- models/       # Database models
+|-- schemas/      # Pydantic request and response contracts
+|-- services/     # Security analysis and dashboard logic
+`-- main.py       # Application setup and router registration
+```
 
-## Run Locally
+Frontend routes and API clients are organized as:
+
+```text
+frontend/
+|-- app/
+|   |-- dashboard/
+|   |   |-- detection-engineering/
+|   |   |-- mitre/
+|   |   |-- reports/
+|   |   |-- soc-analyst/
+|   |   |-- threat-hunting/
+|   |   `-- threat-intel/
+|   |-- login/
+|   `-- register/
+`-- lib/          # Typed API and authentication clients
+```
+
+## Local Setup
+
+### Prerequisites
+
+- Python 3.12
+- Node.js 20 or newer
+- pnpm 11
+- Git
 
 ### Backend
 
-```bash
+Open PowerShell in the repository root:
+
+```powershell
 cd backend
-python -m venv venv
-venv\Scripts\activate
-pip install -r requirements.txt
-uvicorn app.main:app --reload
+py -3.12 -m pip install -r requirements.txt
+py -3.12 -m uvicorn app.main:app --reload
 ```
 
-Backend runs at `http://localhost:8000`.
+The backend is available at:
 
-Python 3.12 is recommended for local development. The Docker setup uses Python 3.12.
+- API: `http://127.0.0.1:8000`
+- Swagger documentation: `http://127.0.0.1:8000/docs`
+- Health check: `http://127.0.0.1:8000/health`
 
 ### Frontend
 
-```bash
+Open a second PowerShell window:
+
+```powershell
 cd frontend
-corepack enable
-pnpm install
-pnpm dev
+npx.cmd pnpm@11.0.7 install
+npx.cmd pnpm@11.0.7 dev
 ```
 
-Frontend runs at `http://localhost:3000`.
+Open `http://localhost:3000`.
 
 ### Docker Compose
 
-```bash
+```powershell
 docker compose up --build
 ```
 
-Services:
+## Configuration
 
-- Frontend: `http://localhost:3000`
-- Backend: `http://localhost:8000`
-- API docs: `http://localhost:8000/docs`
+The backend reads the following optional environment variables:
 
-## Phase Roadmap
+| Variable | Default | Purpose |
+| --- | --- | --- |
+| `DATABASE_URL` | `sqlite:///./cyberguard.db` | SQLAlchemy database connection |
+| `JWT_SECRET_KEY` | Development fallback | JWT signing secret |
+| `ACCESS_TOKEN_EXPIRE_MINUTES` | `60` | Access token lifetime |
 
-1. Project setup
-2. JWT authentication and SQLite users
-3. AI SOC Analyst module
-4. MITRE ATT&CK local mapping
-5. Threat intelligence enrichment
-6. Sigma and YARA detection generation
-7. Threat hunting console
-8. Dashboard analytics
-9. DevSecOps scanner
-10. Docker polish and final README
+Set a strong JWT secret before any shared or deployed use:
 
-## Portfolio Positioning
+```powershell
+$env:JWT_SECRET_KEY = "replace-with-a-long-random-secret"
+```
 
-CyberGuard AI is designed to demonstrate practical cybersecurity engineering skills: API design, security workflow automation, local-first AI architecture, detection logic, ATT&CK mapping, dashboard UX, and production-style project organization.
+The frontend uses `NEXT_PUBLIC_API_BASE_URL` when provided and otherwise connects to `http://127.0.0.1:8000`.
+
+## API Overview
+
+All security workflow endpoints require a Bearer JWT unless noted otherwise.
+
+| Method | Endpoint | Purpose |
+| --- | --- | --- |
+| `GET` | `/health` | Public backend health check |
+| `POST` | `/api/auth/register` | Register a user and return a token |
+| `POST` | `/api/auth/login` | Authenticate and return a token |
+| `GET` | `/api/auth/me` | Return the current user |
+| `GET` | `/api/protected/dashboard` | Validate protected dashboard access |
+| `GET` | `/api/protected/admin` | Validate administrator access |
+| `POST` | `/api/soc/analyze` | Analyze and store a security alert |
+| `GET` | `/api/soc/history` | Return recent investigations |
+| `GET` | `/api/mitre/techniques` | List local MITRE techniques |
+| `GET` | `/api/mitre/techniques/{technique_id}` | Return one technique |
+| `POST` | `/api/mitre/map-log` | Map log content to MITRE techniques |
+| `POST` | `/api/threat-intel/enrich` | Enrich an IP, domain, hash, or CVE |
+| `GET` | `/api/threat-intel/ip/{ip}` | Enrich an IP address |
+| `GET` | `/api/threat-intel/cve/{cve}` | Look up a local CVE |
+| `POST` | `/api/detection/generate` | Generate Sigma and YARA rules |
+| `GET` | `/api/detection/history` | Return recent generated rules |
+| `POST` | `/api/hunting/query` | Run a deterministic threat hunt |
+| `GET` | `/api/hunting/history` | Return recent hunts |
+| `GET` | `/api/dashboard/overview` | Return SOC metrics and analytics |
+| `GET` | `/api/dashboard/report` | Generate an executive Markdown report |
+
+## Recommended Test Workflow
+
+1. Register a user and sign in.
+2. Analyze a failed-login or suspicious PowerShell event in AI SOC Analyst.
+3. Review MITRE mappings and automatic source/destination IP enrichment.
+4. Open the alert in Threat Hunting and inspect the generated timeline.
+5. Generate a Sigma/YARA detection package from the investigation.
+6. Return to the Security Operations Center and verify that KPIs and charts update.
+7. Open Executive Reports and test Copy, Download Markdown, and Print.
+
+## Security Notes
+
+- Passwords are hashed and never stored as plaintext.
+- JWTs expire after the configured lifetime.
+- Protected endpoints validate Bearer tokens and user activity status.
+- CORS is restricted to the configured local frontend origins.
+- Local datasets and deterministic analysis keep security decisions explainable.
+- The browser stores the access token in local storage for this MVP. A production deployment should prefer secure, HTTP-only cookies and add refresh-token rotation, rate limiting, audit logging, and managed secret storage.
+- Generated rules and enrichment results are defensive aids and should be validated before use in a production SIEM or endpoint platform.
+
+## Validation
+
+Frontend type checking and production build:
+
+```powershell
+cd frontend
+npx.cmd tsc --noEmit
+npx.cmd next build
+```
+
+Backend syntax validation:
+
+```powershell
+cd backend
+py -3.12 -m compileall app
+```
+
+## Project Scope
+
+CyberGuard AI is focused on safe, defensive security workflows. It does not execute malware, exploit systems, or run offensive tooling. Future integrations can add optional data providers such as OTX or NVD while preserving the current offline-first analysis path.
