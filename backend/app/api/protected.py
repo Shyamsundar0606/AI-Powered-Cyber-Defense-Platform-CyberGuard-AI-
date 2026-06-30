@@ -18,6 +18,8 @@ def protected_dashboard(current_user: User = Depends(get_current_user)) -> Prote
             "MITRE Knowledge Base",
             "Detection Engineering",
             "Threat Hunting",
+            "Security Operations Dashboard",
+            "Executive Reports",
         ],
     )
 

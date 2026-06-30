@@ -48,14 +48,14 @@ export default function Home() {
 
             <div className="max-w-2xl py-16">
               <p className="mb-4 text-sm font-semibold uppercase tracking-[0.22em] text-cyan-200">
-                SOC automation portfolio platform
+                AI-powered security operations platform
               </p>
               <h1 className="text-5xl font-semibold leading-tight text-white sm:text-6xl">
                 CyberGuard AI
               </h1>
               <p className="mt-6 max-w-xl text-lg leading-8 text-slate-300">
-                A recruiter-friendly cyber defense workspace for alert triage,
-                threat intelligence, MITRE ATT&CK mapping, and detection engineering.
+                An enterprise cyber defense workspace for alert triage, threat
+                intelligence, MITRE ATT&CK mapping, and detection engineering.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link
@@ -93,7 +93,7 @@ export default function Home() {
             <div className="mb-4 flex items-center justify-between border-b border-white/10 pb-3">
               <div>
                 <p className="text-sm font-semibold text-white">Security Operations</p>
-                <p className="text-xs text-slate-400">Phase 1 dashboard preview</p>
+                <p className="text-xs text-slate-400">Unified security operations workspace</p>
               </div>
               <span className="rounded-full bg-emerald-400/15 px-3 py-1 text-xs font-medium text-emerald-200">
                 Online

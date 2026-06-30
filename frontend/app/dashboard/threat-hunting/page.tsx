@@ -9,6 +9,7 @@ import {
   BrainCircuit,
   Clock,
   FileCode2,
+  FileText,
   History,
   Loader2,
   LogOut,
@@ -158,7 +159,7 @@ export default function ThreatHuntingPage() {
             </span>
             <div>
               <p className="font-semibold">CyberGuard AI</p>
-              <p className="text-xs text-slate-400">SOC command center</p>
+              <p className="text-xs text-slate-400">Security Operations Center</p>
             </div>
           </div>
           <nav className="space-y-1">
@@ -168,14 +169,15 @@ export default function ThreatHuntingPage() {
             <SidebarLink href="/dashboard/mitre" icon={Activity} label="MITRE Knowledge Base" />
             <SidebarLink href="/dashboard/detection-engineering" icon={FileCode2} label="Detection Engineering" />
             <SidebarLink href="/dashboard/threat-hunting" icon={Search} label="Threat Hunting" active />
+            <SidebarLink href="/dashboard/reports" icon={FileText} label="Executive Reports" />
           </nav>
         </aside>
 
         <section className="px-6 py-6 lg:px-8">
           <header className="mb-6 flex flex-col gap-4 border-b border-slate-200 pb-6 xl:flex-row xl:items-center xl:justify-between">
             <div>
-              <p className="text-sm font-medium text-cyan-700">Phase 7</p>
-              <h1 className="mt-1 text-3xl font-semibold text-slate-950">Threat Hunting Console</h1>
+              <h1 className="text-3xl font-semibold text-slate-950">Threat Hunting</h1>
+              <p className="mt-2 text-sm text-slate-500">Search logs, detect suspicious activity, and reconstruct attack timelines.</p>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
               <div className="rounded-md border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600">

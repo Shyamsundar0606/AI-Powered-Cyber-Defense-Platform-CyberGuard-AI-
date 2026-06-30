@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
-import { Activity, ArrowLeft, BrainCircuit, FileCode2, Loader2, LogOut, Radar, Search, ShieldCheck } from "lucide-react";
+import { Activity, ArrowLeft, BrainCircuit, FileCode2, FileText, Loader2, LogOut, Radar, Search, ShieldCheck } from "lucide-react";
 
 import { AuthUser, clearAuthSession, fetchCurrentUser, getAuthToken, getStoredUser } from "@/lib/auth";
 import { enrichThreatIndicator, IndicatorType, ThreatIntelResult } from "@/lib/threat-intel";
@@ -102,7 +102,7 @@ export default function ThreatIntelPage() {
             </span>
             <div>
               <p className="font-semibold">CyberGuard AI</p>
-              <p className="text-xs text-slate-400">SOC command center</p>
+              <p className="text-xs text-slate-400">Security Operations Center</p>
             </div>
           </div>
           <nav className="space-y-1">
@@ -130,14 +130,18 @@ export default function ThreatIntelPage() {
               <Search size={18} aria-hidden="true" />
               Threat Hunting
             </Link>
+            <Link href="/dashboard/reports" className="flex items-center gap-3 rounded-md px-3 py-3 text-sm text-slate-300 transition hover:bg-white/10 hover:text-white">
+              <FileText size={18} aria-hidden="true" />
+              Executive Reports
+            </Link>
           </nav>
         </aside>
 
         <section className="px-6 py-6 lg:px-8">
           <header className="mb-6 flex flex-col gap-4 border-b border-slate-200 pb-6 xl:flex-row xl:items-center xl:justify-between">
             <div>
-              <p className="text-sm font-medium text-cyan-700">Phase 5</p>
-              <h1 className="mt-1 text-3xl font-semibold text-slate-950">Threat Intelligence</h1>
+              <h1 className="text-3xl font-semibold text-slate-950">Threat Intelligence</h1>
+              <p className="mt-2 text-sm text-slate-500">Enrich indicators of compromise using local threat intelligence datasets.</p>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
               <div className="rounded-md border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600">

@@ -9,6 +9,7 @@ import {
   BrainCircuit,
   Clipboard,
   FileCode2,
+  FileText,
   Loader2,
   LogOut,
   Radar,
@@ -154,7 +155,7 @@ export default function DetectionEngineeringPage() {
             </span>
             <div>
               <p className="font-semibold">CyberGuard AI</p>
-              <p className="text-xs text-slate-400">SOC command center</p>
+              <p className="text-xs text-slate-400">Security Operations Center</p>
             </div>
           </div>
           <nav className="space-y-1">
@@ -182,14 +183,18 @@ export default function DetectionEngineeringPage() {
               <Search size={18} aria-hidden="true" />
               Threat Hunting
             </Link>
+            <Link href="/dashboard/reports" className="flex items-center gap-3 rounded-md px-3 py-3 text-sm text-slate-300 transition hover:bg-white/10 hover:text-white">
+              <FileText size={18} aria-hidden="true" />
+              Executive Reports
+            </Link>
           </nav>
         </aside>
 
         <section className="px-6 py-6 lg:px-8">
           <header className="mb-6 flex flex-col gap-4 border-b border-slate-200 pb-6 xl:flex-row xl:items-center xl:justify-between">
             <div>
-              <p className="text-sm font-medium text-cyan-700">Phase 7</p>
-              <h1 className="mt-1 text-3xl font-semibold text-slate-950">Detection Engineering</h1>
+              <h1 className="text-3xl font-semibold text-slate-950">Detection Engineering</h1>
+              <p className="mt-2 text-sm text-slate-500">Generate Sigma and YARA detection rules for security monitoring.</p>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
               <div className="rounded-md border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600">

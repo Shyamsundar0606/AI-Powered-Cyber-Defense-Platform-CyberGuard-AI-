@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 
-from app.api import auth, detection, hunting, mitre, protected, soc, threat_intel
+from app.api import auth, dashboard, detection, hunting, mitre, protected, soc, threat_intel
 from app.core.config import get_settings
 from app.db.database import Base, engine
 from app.models import detection_rule as detection_rule_model
@@ -25,7 +25,7 @@ with engine.begin() as connection:
 app = FastAPI(
     title="CyberGuard AI API",
     description="AI-powered cyber defense platform backend.",
-    version="0.7.0",
+    version="0.8.0",
 )
 
 app.add_middleware(
@@ -43,6 +43,7 @@ app.include_router(mitre.router)
 app.include_router(threat_intel.router)
 app.include_router(detection.router)
 app.include_router(hunting.router)
+app.include_router(dashboard.router)
 
 
 @app.get("/health", tags=["system"])
@@ -54,7 +55,7 @@ def health_check() -> dict[str, str]:
 def api_status() -> dict[str, str]:
     return {
         "project": "CyberGuard AI",
-        "phase": "Phase 7 - Threat Hunting Console",
+        "phase": "Phase 8 - Security Operations Dashboard",
         "backend": "online",
         "auth": "jwt-enabled",
         "database": "sqlite",
@@ -63,4 +64,5 @@ def api_status() -> dict[str, str]:
         "threat_intel": "offline-local",
         "detection_engineering": "sigma-yara-rule-generation",
         "threat_hunting": "deterministic-timeline-analysis",
+        "executive_reporting": "sqlite-powered-markdown",
     }
